@@ -3,27 +3,35 @@ import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-  axios
-    .get("http://localhost:5000/api/hello")
-    .then((response) => {
-      console.log(response.data);
-      setMessage(response.data.message);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-    }, []);
+    axios
+      .get("http://localhost:5000/api/users")
+      .then((response) => {
+        console.log(response.data);
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   return (
     <div>
       <h1>PrepOnGo</h1>
 
-      <p>Backend Message:</p>
+      <h2>Registered Users</h2>
 
-      <h2>{message}</h2>
+      {users.map((user) => (
+        <div key={user.id}>
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>College:</strong> {user.college}</p>
+          <p><strong>Year:</strong> {user.year}</p>
+          <hr />
+        </div>
+      ))}
     </div>
   );
 }
