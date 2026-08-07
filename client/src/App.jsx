@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import "./App.css";
 import UserCard from "./components/UserCard";
 import RegisterForm from "./components/RegisterForm";
+import { getUsers } from "./api/userApi";
 
 function App() {
   const [users, setUsers] = useState([]);
 
-  const fetchUsers = () => {
-  axios
-    .get("http://localhost:5000/api/users")
-    .then((response) => {
-      setUsers(response.data);
-    })
-    .catch((error) => {
+  const fetchUsers = async () => {
+    try {
+      const users = await getUsers();
+      setUsers(users);
+    } catch(error){
       console.error(error);
-    });
+    }
   };
 
   useEffect(() => {
