@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
+import UserCard from "./components/UserCard";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -24,13 +25,10 @@ function App() {
       <h2>Registered Users</h2>
 
       {users.map((user) => (
-        <div key={user.id}>
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>College:</strong> {user.college}</p>
-          <p><strong>Year:</strong> {user.year}</p>
-          <hr />
-        </div>
+        <UserCard
+        key={user.id}
+        user={user}
+      />
       ))}
     </div>
   );
