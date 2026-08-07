@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function RegisterForm() {
+function RegisterForm({ refreshUsers }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +26,8 @@ function RegisterForm() {
     console.log("User Created:", response.data);
 
     alert("User Registered Successfully!");
+
+    refreshUsers();
 
     setName("");
     setEmail("");

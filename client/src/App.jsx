@@ -7,16 +7,19 @@ import RegisterForm from "./components/RegisterForm";
 function App() {
   const [users, setUsers] = useState([]);
 
+  const fetchUsers = () => {
+  axios
+    .get("http://localhost:5000/api/users")
+    .then((response) => {
+      setUsers(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  };
+
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/users")
-      .then((response) => {
-        console.log(response.data);
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    fetchUsers();
   }, []);
 
   return (
@@ -33,7 +36,7 @@ function App() {
       ))}
       <hr />
 
-      <RegisterForm />
+      <RegisterForm refreshUsers={fetchUsers} />
     </div>
   );
 }
