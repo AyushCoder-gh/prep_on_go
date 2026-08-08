@@ -11,3 +11,27 @@ export const createUser = async (userData) => {
   const response = await axios.post(`${BASE_URL}/users`, userData);
   return response.data;
 };
+
+export const loginUser = async (loginData) => {
+  const response = await axios.post(
+    `${BASE_URL}/login`,
+    loginData
+  );
+
+  return response.data;
+};
+
+export const getProfile = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await axios.get(
+    `${BASE_URL}/profile`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

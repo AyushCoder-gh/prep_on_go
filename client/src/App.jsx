@@ -3,9 +3,15 @@ import "./App.css";
 import UserCard from "./components/UserCard";
 import RegisterForm from "./components/RegisterForm";
 import { getUsers } from "./api/userApi";
+import LoginForm from "./components/LoginForm";
+import Profile from "./components/Profile";
 
 function App() {
   const [users, setUsers] = useState([]);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(
+  !!localStorage.getItem("token")
+);
 
   const fetchUsers = async () => {
     try {
@@ -19,6 +25,11 @@ function App() {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+  setIsLoggedIn(false);
+};
 
   return (
     <div>
@@ -35,6 +46,18 @@ function App() {
       <hr />
 
       <RegisterForm refreshUsers={fetchUsers} />
+
+      {isLoggedIn ? (
+    <>
+    <Profile />
+
+    <button onClick={handleLogout}>
+      Logout
+    </button>
+  </>
+  ) : (
+    <LoginForm onLogin={() => setIsLoggedIn(true)} />
+  )}
     </div>
   );
 }
