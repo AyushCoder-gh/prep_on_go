@@ -7,9 +7,26 @@ function RegisterForm({ refreshUsers }) {
   const [password, setPassword] = useState("");
   const [college, setCollege] = useState("");
   const [year, setYear] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (event) => {
   event.preventDefault();
+
+  setError("");
+  if(!name || !email || !password || !college || !year){
+    setError("All fields are required.");
+    return;
+  }
+
+  if(!email.includes("@")){
+    setError("Please enter a valid email.");
+    return;
+  }
+
+  if(password.length < 6){
+    setError("Password must be at least 6 characters.");
+    return;
+  }
 
   try {
     const response = await axios.post(
@@ -44,6 +61,8 @@ function RegisterForm({ refreshUsers }) {
   return (
     <div>
       <h2>Register User</h2>
+
+      {error && <p>{error}</p>}
 
       <form onSubmit={handleSubmit}>
         <input

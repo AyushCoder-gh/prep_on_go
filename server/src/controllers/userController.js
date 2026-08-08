@@ -27,6 +27,27 @@ const createUser = async (req, res) => {
   try {
     const { name, email, password, college, year } = req.body;
 
+    // Required fields validation
+    if (!name || !email || !password || !college || !year) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    // Email validation
+    if (!email.includes("@")) {
+      return res.status(400).json({
+        message: "Please enter a valid email",
+      });
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+      });
+    }
+
     const result = await pool.query(
       `
       INSERT INTO users (name, email, password, college, year)
