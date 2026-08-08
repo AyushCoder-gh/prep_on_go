@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const bcrypt = require("bcrypt");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -48,13 +49,15 @@ const createUser = async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const result = await pool.query(
       `
       INSERT INTO users (name, email, password, college, year)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING id, name, email, college, year, created_at;
       `,
-      [name, email, password, college, year]
+      [name, email, hashedPassword, college, year]
     );
 
     res.status(201).json(result.rows[0]);
