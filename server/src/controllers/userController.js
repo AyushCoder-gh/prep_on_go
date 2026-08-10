@@ -100,7 +100,9 @@ const loginUser = async (req, res) => {
     );
 
     const token = jwt.sign(
-    { userId: user.id },
+    { userId: user.id,
+      role: user.role,
+     },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
     );
@@ -120,6 +122,7 @@ const loginUser = async (req, res) => {
     email: user.email,
     college: user.college,
     year: user.year,
+    role: user.role,
   },
 });
   } catch (error) {
@@ -158,9 +161,43 @@ const getProfile = async (req, res) => {
   }
 };
 
+const deleteUser = async(req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if(Number(userId) === Number(req.user.userId)){
+      return res.status(400).json({
+        message: "You cannot delete your own account",
+      });
+    }
+    const result = await pool.query(
+      "DELETE FROM users WHERE id = $1 RETURNING id, name, email",
+      [userId]
+    );
+
+    if(result.rows.length === 0){
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "User deleted successfully",
+      user: result.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Failed to delete user",
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
   getProfile,
+  deleteUser,
 };

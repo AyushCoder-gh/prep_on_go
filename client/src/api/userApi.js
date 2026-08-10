@@ -35,3 +35,18 @@ export const getProfile = async () => {
 
   return response.data;
 };
+
+export const deleteUser = async (userId) => {
+  const token = localStorage.getItem("token");
+
+  const response = await axios.delete(
+    `${BASE_URL}/users/${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+}

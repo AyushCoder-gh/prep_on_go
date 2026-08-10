@@ -20,8 +20,9 @@ function LoginForm({ onLogin }) {
 console.log(response);
 
 localStorage.setItem("token", response.token);
+localStorage.setItem("role", response.user.role);
 
-onLogin();
+onLogin(response.user.role);
 
 setMessage("Login successful!");
   } catch (error) {

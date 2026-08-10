@@ -5,13 +5,18 @@ import RegisterForm from "./components/RegisterForm";
 import { getUsers } from "./api/userApi";
 import LoginForm from "./components/LoginForm";
 import Profile from "./components/Profile";
+import AdminUsers from "./components/AdminUsers";
 
 function App() {
   const [users, setUsers] = useState([]);
 
   const [isLoggedIn, setIsLoggedIn] = useState(
   !!localStorage.getItem("token")
-);
+  );
+
+  const [userRole, setUserRole] = useState(
+    localStorage.getItem("role")
+  );
 
   const fetchUsers = async () => {
     try {
@@ -28,7 +33,9 @@ function App() {
 
   const handleLogout = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("role");
   setIsLoggedIn(false);
+  setUserRole(null);
 };
 
   return (
@@ -51,12 +58,19 @@ function App() {
     <>
     <Profile />
 
+    {userRole === "admin" && <AdminUsers />}
+
     <button onClick={handleLogout}>
       Logout
     </button>
   </>
   ) : (
-    <LoginForm onLogin={() => setIsLoggedIn(true)} />
+    <LoginForm
+      onLogin={(role) => {
+        setIsLoggedIn(true);
+        setUserRole(role);
+      }}
+    />
   )}
     </div>
   );
