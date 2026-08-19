@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes");
+const errorHandler = require("./middleware/errorMiddleware");
 
 const app = express();
 
@@ -16,5 +17,7 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api", userRoutes);
+
+app.use(errorHandler);
 
 module.exports = app;

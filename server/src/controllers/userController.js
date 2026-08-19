@@ -2,7 +2,7 @@ const pool = require("../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
   try {
     const result = await pool.query(`
       SELECT
@@ -17,15 +17,11 @@ const getAllUsers = async (req, res) => {
 
     res.json(result.rows);
   } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Database Error",
-    });
+    next(error);
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const { name, email, password, college, year } = req.body;
 
@@ -63,15 +59,11 @@ const createUser = async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Failed to create user",
-    });
+    next(error);
   }
 };
 
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -126,15 +118,11 @@ const loginUser = async (req, res) => {
   },
 });
   } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Login failed",
-    });
+    next(error);
   }
 };
 
-const getProfile = async (req, res) => {
+const getProfile = async (req, res, next) => {
   try {
     const result = await pool.query(
       `
@@ -153,15 +141,11 @@ const getProfile = async (req, res) => {
 
     res.status(200).json(result.rows[0]);
   } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Failed to fetch profile",
-    });
+    next(error);
   }
 };
 
-const deleteUser = async(req, res) => {
+const deleteUser = async(req, res, next) => {
   try {
     const userId = req.params.id;
 
@@ -186,11 +170,7 @@ const deleteUser = async(req, res) => {
       user: result.rows[0],
     });
   } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Failed to delete user",
-    });
+    next(error);
   }
 };
 
