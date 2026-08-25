@@ -30,6 +30,14 @@ export const getQuestions = async () => {
   return response.data;
 };
 
+export const submitQuiz = async (answers) => {
+  const response = await apiClient.post("/quiz/submit", {
+    answers,
+  });
+
+  return response.data;
+};
+
 export const createQuestion = async (questionData) => {
   const response = await apiClient.post("/questions", questionData);
   return response.data;

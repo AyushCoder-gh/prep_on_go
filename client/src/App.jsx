@@ -8,6 +8,8 @@ import Profile from "./components/Profile";
 import AdminUsers from "./components/AdminUsers";
 import AuthContext from "./context/AuthContext";
 import AdminQuestions from "./components/AdminQuestions";
+import Quiz from "./components/Quiz";
+
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -57,6 +59,8 @@ function App() {
     <AdminQuestions />
   </>
 )}
+
+  {user?.role !== "admin" && <Quiz />}
 
     <button onClick={logout}>
       Logout

@@ -3,7 +3,7 @@ import { loginUser } from "../api/userApi";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 
-function LoginForm({ onLogin }) {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -24,8 +24,6 @@ function LoginForm({ onLogin }) {
 console.log(response);
 
 login(response.user, response.token);
-
-onLogin(response.user.role);
 
 setMessage("Login successful!");
   } catch (error) {
