@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { loginUser } from "../api/userApi";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 function LoginForm({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (event) => {
   event.preventDefault();
@@ -19,8 +23,7 @@ function LoginForm({ onLogin }) {
 
 console.log(response);
 
-localStorage.setItem("token", response.token);
-localStorage.setItem("role", response.user.role);
+login(response.user, response.token);
 
 onLogin(response.user.role);
 

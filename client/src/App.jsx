@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import "./App.css";
 import UserCard from "./components/UserCard";
 import RegisterForm from "./components/RegisterForm";
@@ -6,17 +6,12 @@ import { getUsers } from "./api/userApi";
 import LoginForm from "./components/LoginForm";
 import Profile from "./components/Profile";
 import AdminUsers from "./components/AdminUsers";
+import AuthContext from "./context/AuthContext";
 
 function App() {
   const [users, setUsers] = useState([]);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(
-  !!localStorage.getItem("token")
-  );
-
-  const [userRole, setUserRole] = useState(
-    localStorage.getItem("role")
-  );
+  const { user, isAuthenticated, loading, logout } = useContext(AuthContext);
 
   const fetchUsers = async () => {
     try {
@@ -31,13 +26,10 @@ function App() {
     fetchUsers();
   }, []);
 
-  const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  setIsLoggedIn(false);
-  setUserRole(null);
-};
-
+  if(loading){
+    return <p>Checking authentication...</p>
+  }
+  
   return (
     <div>
       <h1>PrepOnGo</h1>
@@ -54,23 +46,18 @@ function App() {
 
       <RegisterForm refreshUsers={fetchUsers} />
 
-      {isLoggedIn ? (
+      {isAuthenticated ? (
     <>
     <Profile />
 
-    {userRole === "admin" && <AdminUsers />}
+    {user?.role === "admin" && <AdminUsers />}
 
-    <button onClick={handleLogout}>
+    <button onClick={logout}>
       Logout
     </button>
   </>
   ) : (
-    <LoginForm
-      onLogin={(role) => {
-        setIsLoggedIn(true);
-        setUserRole(role);
-      }}
-    />
+    <LoginForm />
   )}
     </div>
   );

@@ -126,7 +126,7 @@ const getProfile = async (req, res, next) => {
   try {
     const result = await pool.query(
       `
-      SELECT id, name, email, college, year, created_at
+      SELECT id, name, email, college, year, role, created_at
       FROM users
       WHERE id = $1;
       `,

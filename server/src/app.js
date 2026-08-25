@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes");
+const questionRoutes = require("./routes/questionRoutes");
+
 const errorHandler = require("./middleware/errorMiddleware");
 
 const app = express();
@@ -17,6 +19,7 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api", userRoutes);
+app.use("/api", questionRoutes);
 
 app.use(errorHandler);
 

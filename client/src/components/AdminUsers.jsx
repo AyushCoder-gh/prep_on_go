@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { getUsers, deleteUser } from "../api/userApi";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState("");
+
+  const { user } = useContext(AuthContext);
 
   const fetchUsers = async () => {
     try {
@@ -23,6 +27,10 @@ function AdminUsers() {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  if(!user || user.role !== "admin"){
+    return null;
+  }
 
   const handleDelete = async (userId) => {
     const confirmed = window.confirm(
