@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getQuestions, deleteQuestion, createQuestion } from "../api/userApi";
+import { getQuestions, deleteQuestion, createQuestion, updateQuestion } from "../api/userApi";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 
@@ -8,6 +8,19 @@ function AdminQuestions() {
   const [message, setMessage] = useState("");
   
   const [formData, setFormData] = useState({
+    question: "",
+    option_a: "",
+    option_b: "",
+    option_c: "",
+    option_d: "",
+    correct_option: "A",
+    category: "",
+    difficulty: "Easy",
+  });
+
+  const [editingId, setEditingId] = useState(null);
+
+  const [editData, setEditData] = useState({
     question: "",
     option_a: "",
     option_b: "",
@@ -87,6 +100,67 @@ function AdminQuestions() {
             setMessage(error.response.data.message);
         }else{
             setMessage("Failed to create question.");
+        }
+    }
+  };
+
+  const handleEdit = (question) => {
+    setEditingId(question.id);
+
+    setEditData({
+        question: question.question,
+        option_a: question.option_a,
+        option_b: question.option_b,
+        option_c: question.option_c,
+        option_d: question.option_d,
+        correct_option: question.correct_option || "A",
+        category: question.category,
+        difficulty: question.difficulty,
+    });
+  };
+
+  const handleEditChange = (event) => {
+    const { name, value } = event.target;
+
+    setEditData((currentData) => ({
+        ...currentData,
+        [name]: value,
+    }));
+  };
+
+  const handleSaveEdit = async (event) => {
+    event.preventDefault();
+
+    try{
+        const data = await updateQuestion(editingId, editData);
+
+        setQuestions((currentQuestions) =>
+            currentQuestions.map((question) =>
+                question.id === editingId ? data.question : question
+            )
+        );
+
+        setMessage("Question updated successfully.");
+
+        setEditingId(null);
+
+        setEditData({
+            question: "",
+            option_a: "",
+            option_b: "",
+            option_c: "",
+            option_d: "",
+            correct_option: "A",
+            category: "",
+            difficulty: "Easy",
+        });
+    }catch(error){
+        console.error(error);
+
+        if(error.response){
+            setMessage(error.response.data.message);
+        }else{
+            setMessage("Failed to update question.");
         }
     }
   };
@@ -263,7 +337,131 @@ function AdminQuestions() {
           <p>
             <strong>Difficulty:</strong> {question.difficulty}
           </p>
+
+          <button onClick={() => handleEdit(question)}>
+            Edit
+          </button>
         
+        {editingId === question.id && (
+  <form onSubmit={handleSaveEdit}>
+    <div>
+      <label>Question</label>
+      <br />
+      <textarea
+        name="question"
+        value={editData.question}
+        onChange={handleEditChange}
+        required
+      />
+    </div>
+
+    <div>
+      <label>Option A</label>
+      <br />
+      <input
+        type="text"
+        name="option_a"
+        value={editData.option_a}
+        onChange={handleEditChange}
+        required
+      />
+    </div>
+
+    <div>
+      <label>Option B</label>
+      <br />
+      <input
+        type="text"
+        name="option_b"
+        value={editData.option_b}
+        onChange={handleEditChange}
+        required
+      />
+    </div>
+
+    <div>
+      <label>Option C</label>
+      <br />
+      <input
+        type="text"
+        name="option_c"
+        value={editData.option_c}
+        onChange={handleEditChange}
+        required
+      />
+    </div>
+
+    <div>
+      <label>Option D</label>
+      <br />
+      <input
+        type="text"
+        name="option_d"
+        value={editData.option_d}
+        onChange={handleEditChange}
+        required
+      />
+    </div>
+
+    <div>
+      <label>Correct Option</label>
+      <br />
+
+      <select
+        name="correct_option"
+        value={editData.correct_option}
+        onChange={handleEditChange}
+      >
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Category</label>
+      <br />
+
+      <input
+        type="text"
+        name="category"
+        value={editData.category}
+        onChange={handleEditChange}
+        required
+      />
+    </div>
+
+    <div>
+      <label>Difficulty</label>
+      <br />
+
+      <select
+        name="difficulty"
+        value={editData.difficulty}
+        onChange={handleEditChange}
+      >
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+    </div>
+
+    <br />
+
+    <button type="submit">
+      Save Changes
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setEditingId(null)}
+    >
+      Cancel
+    </button>
+  </form>
+)}
+
           <button onClick={() => handleDelete(question.id)}>
             Delete
           </button>
