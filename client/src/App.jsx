@@ -7,6 +7,7 @@ import LoginForm from "./components/LoginForm";
 import Profile from "./components/Profile";
 import AdminUsers from "./components/AdminUsers";
 import AuthContext from "./context/AuthContext";
+import AdminQuestions from "./components/AdminQuestions";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -50,7 +51,12 @@ function App() {
     <>
     <Profile />
 
-    {user?.role === "admin" && <AdminUsers />}
+    {user?.role === "admin" && (
+  <>
+    <AdminUsers />
+    <AdminQuestions />
+  </>
+)}
 
     <button onClick={logout}>
       Logout

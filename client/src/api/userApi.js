@@ -24,3 +24,30 @@ export const deleteUser = async (userId) => {
   const response = await apiClient.delete(`/users/${userId}`);
   return response.data;
 };
+
+export const getQuestions = async () => {
+  const response = await apiClient.get("/questions");
+  return response.data;
+};
+
+export const createQuestion = async (questionData) => {
+  const response = await apiClient.post("/questions", questionData);
+  return response.data;
+};
+
+export const updateQuestion = async (questionId, questionData) => {
+  const response = await apiClient.put(
+    `/questions/${questionId}`,
+    questionData
+  );
+
+  return response.data;
+};
+
+export const deleteQuestion = async (questionId) => {
+  const response = await apiClient.delete(
+    `/questions/${questionId}`
+  );
+
+  return response.data;
+};
