@@ -2,6 +2,7 @@ const express = require("express");
 
 const {
     getAllQuestions,
+    getAllQuestionsForAdmin,
     createQuestion,
     deleteQuestion,
     updateQuestion,
@@ -16,6 +17,7 @@ const { createQuestionSchema, updateQuestionSchema } = require("../validators/qu
 
 const router = express.Router();
 
+router.get("/admin/questions", authMiddleware, authorizeAdmin, getAllQuestionsForAdmin);
 router.get("/questions", authMiddleware, getAllQuestions);
 router.post("/questions", authMiddleware, authorizeAdmin, validate(createQuestionSchema), createQuestion);
 router.delete("/questions/:id", authMiddleware, authorizeAdmin, deleteQuestion);

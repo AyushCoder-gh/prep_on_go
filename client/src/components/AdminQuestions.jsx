@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getQuestions, deleteQuestion, createQuestion, updateQuestion } from "../api/userApi";
+import { getAdminQuestions, deleteQuestion, createQuestion, updateQuestion } from "../api/userApi";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 
@@ -172,7 +172,7 @@ function AdminQuestions() {
 
     const fetchQuestions = async () => {
       try {
-        const data = await getQuestions();
+        const data = await getAdminQuestions();
         setQuestions(data);
       } catch (error) {
         console.error(error);

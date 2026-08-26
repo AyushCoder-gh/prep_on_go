@@ -3,10 +3,33 @@ const pool = require("../config/db");
 const getAllQuestions = async (req, res, next) => {
     try{
         const result = await pool.query(`
-            SELECT id, question, option_a, option_b, option_c, option_d, correct_option, category, difficulty, created_at
+            SELECT id, question, option_a, option_b, option_c, option_d, category, difficulty, created_at
             FROM questions
             ORDER BY id ASC
             `);
+        res.status(200).json(result.rows);
+    }catch(error){
+        next(error);
+    }
+};
+
+const getAllQuestionsForAdmin = async (req, res, next) => {
+    try{
+        const result = await pool.query(`
+            SELECT 
+                id, 
+                question,
+                option_a,
+                option_b, 
+                option_c,
+                option_d,
+                correct_option,
+                category,
+                difficulty,
+                created_at
+            FROM questions
+            ORDER BY id ASC
+        `);
         res.status(200).json(result.rows);
     }catch(error){
         next(error);
@@ -168,6 +191,7 @@ const updateQuestion = async (req, res, next) => {
 
 module.exports = {
     getAllQuestions,
+    getAllQuestionsForAdmin,
     createQuestion,
     deleteQuestion,
     updateQuestion,

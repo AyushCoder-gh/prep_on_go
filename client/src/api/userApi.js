@@ -30,6 +30,11 @@ export const getQuestions = async () => {
   return response.data;
 };
 
+export const getAdminQuestions = async () => {
+  const response = await apiClient.get("/admin/questions");
+  return response.data;
+};
+
 export const submitQuiz = async (answers) => {
   const response = await apiClient.post("/quiz/submit", {
     answers,
