@@ -338,7 +338,7 @@ function AdminQuestions() {
             <strong>Difficulty:</strong> {question.difficulty}
           </p>
 
-          <button onClick={() => handleEdit(question)}>
+          <button type="button"onClick={() => handleEdit(question)}>
             Edit
           </button>
         
@@ -462,7 +462,7 @@ function AdminQuestions() {
   </form>
 )}
 
-          <button onClick={() => handleDelete(question.id)}>
+          <button type="button"onClick={() => handleDelete(question.id)}>
             Delete
           </button>
           <hr />
