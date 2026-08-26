@@ -4,17 +4,16 @@ import UserCard from "./components/UserCard";
 import RegisterForm from "./components/RegisterForm";
 import { getUsers } from "./api/userApi";
 import LoginForm from "./components/LoginForm";
-import Profile from "./components/Profile";
-import AdminUsers from "./components/AdminUsers";
 import AuthContext from "./context/AuthContext";
-import AdminQuestions from "./components/AdminQuestions";
-import Quiz from "./components/Quiz";
+import QuizHistory from "./components/QuizHistory";
+import Navbar from "./components/Navbar";
+import Dashboard from "./components/Dashboard";
 
 
 function App() {
   const [users, setUsers] = useState([]);
 
-  const { user, isAuthenticated, loading, logout } = useContext(AuthContext);
+  const { isAuthenticated, loading } = useContext(AuthContext);
 
   const fetchUsers = async () => {
     try {
@@ -35,7 +34,7 @@ function App() {
   
   return (
     <div>
-      <h1>PrepOnGo</h1>
+      <Navbar />
 
       <h2>Registered Users</h2>
 
@@ -50,22 +49,7 @@ function App() {
       <RegisterForm refreshUsers={fetchUsers} />
 
       {isAuthenticated ? (
-    <>
-    <Profile />
-
-    {user?.role === "admin" && (
-  <>
-    <AdminUsers />
-    <AdminQuestions />
-  </>
-)}
-
-  {user?.role !== "admin" && <Quiz />}
-
-    <button onClick={logout}>
-      Logout
-    </button>
-  </>
+    <Dashboard />
   ) : (
     <LoginForm />
   )}

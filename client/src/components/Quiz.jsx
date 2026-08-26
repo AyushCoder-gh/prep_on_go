@@ -89,6 +89,12 @@ function Quiz() {
     }
   };
 
+  const handleTryAgain = () => {
+    setAnswers({});
+    setResult(null);
+    setMessage("");
+  };
+
   return (
   <div>
     <h2>Quiz</h2>
@@ -179,6 +185,10 @@ function Quiz() {
             <p>
                 Percentage: {result.percentage}%
             </p>
+
+            <button type="button" onClick={handleTryAgain}>
+              Try Again
+            </button>
         </div>
     )}
     </div>

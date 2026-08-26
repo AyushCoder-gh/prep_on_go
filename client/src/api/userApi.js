@@ -64,3 +64,8 @@ export const deleteQuestion = async (questionId) => {
 
   return response.data;
 };
+
+export const getQuizStats = async () => {
+  const response = await apiClient.get("/quiz/stats");
+  return response.data;
+};
