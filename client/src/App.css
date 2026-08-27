@@ -160,6 +160,14 @@ button {
   .dashboard-header h1 {
     font-size: 25px;
   }
+
+  .performance-chart-card {
+  padding: 16px;
+}
+
+.chart-container {
+  height: 250px;
+}
 }
 
 @media (max-width: 700px) {
@@ -499,4 +507,45 @@ button {
 
 .quiz-result strong {
   font-size: 24px;
+}
+
+.performance-section {
+  width: 100%;
+}
+
+.performance-chart-card {
+  margin-top: 24px;
+  padding: 24px;
+
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.chart-heading {
+  margin-bottom: 20px;
+}
+
+.chart-heading h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.chart-heading p {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.chart-container {
+  width: 100%;
+  height: 300px;
+}
+
+.chart-empty {
+  padding: 40px 0;
+  text-align: center;
+  color: #6b7280;
 }
