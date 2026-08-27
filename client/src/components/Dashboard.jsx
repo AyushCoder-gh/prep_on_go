@@ -1,6 +1,6 @@
 import AuthContext from "../context/AuthContext";
 import { useContext } from "react";
-
+import AdminStats from "./AdminStats";
 import Profile from "./Profile";
 import AdminUsers from "./AdminUsers";
 import AdminQuestions from "./AdminQuestions";
@@ -41,6 +41,7 @@ function Dashboard() {
 
       {user?.role === "admin" ? (
         <section className="dashboard-section">
+          <AdminStats />
           <AdminUsers />
           <AdminQuestions />
         </section>

@@ -129,8 +129,30 @@ const getQuizStats = async (req, res, next) => {
   }
 };
 
+const getAdminStats = async (req, res, next) => {
+  try{
+    const result = await pool.query(`
+      SELECT 
+        (SELECT COUNT(*) FROM users) AS total_users,
+        (SELECT COUNT(*) FROM questions) AS total_questions,
+        (SELECT COUNT(*) FROM quiz_attempts) AS total_attempts
+      `);
+
+    const stats = result.rows[0];
+
+    res.status(200).json({
+      totalUsers: Number(stats.total_users),
+      totalQuestions: Number(stats.total_questions),
+      totalAttempts: Number(stats.total_attempts),
+    });
+  }catch(error){
+    next(error);
+  }
+};
+
 module.exports = {
   submitQuiz,
   getQuizHistory,
   getQuizStats,
+  getAdminStats,
 };

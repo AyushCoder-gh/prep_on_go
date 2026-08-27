@@ -35,35 +35,73 @@ function QuizHistory() {
     return null;
   }
 
-  return (
-    <div>
-      <h2>Quiz History</h2>
+  const getScoreClass = (percentage) => {
+    if (percentage >= 80) {
+      return "score-good";
+    }
 
-      {message && <p>{message}</p>}
+    if (percentage >= 50) {
+      return "score-average";
+    }
+
+    return "score-low";
+  };
+
+  return (
+    <div className="history-section">
+      <div className="history-header">
+        <div>
+          <p className="card-label">QUIZ ACTIVITY</p>
+          <h2>Quiz History</h2>
+          <p>Review your previous quiz attempts and scores.</p>
+        </div>
+
+        <span className="attempt-count">
+          {attempts.length}{" "}
+          {attempts.length === 1 ? "Attempt" : "Attempts"}
+        </span>
+      </div>
+
+      {message && <p className="history-message">{message}</p>}
 
       {attempts.length === 0 ? (
-        <p>No quiz attempts yet.</p>
+        <div className="empty-history">
+          <h3>No quiz attempts yet</h3>
+          <p>
+            Complete your first quiz to start building your history.
+          </p>
+        </div>
       ) : (
-        attempts.map((attempt) => (
-          <div key={attempt.id}>
-            <p>
-              <strong>Score:</strong>{" "}
-              {attempt.score}/{attempt.total}
-            </p>
+        <div className="history-list">
+          {attempts.map((attempt, index) => (
+            <div className="history-card" key={attempt.id}>
+              <div className="history-number">
+                #{index + 1}
+              </div>
 
-            <p>
-              <strong>Percentage:</strong>{" "}
-              {attempt.percentage}%
-            </p>
+              <div className="history-score">
+                <span>Score</span>
+                <strong>
+                  {attempt.score}/{attempt.total}
+                </strong>
+              </div>
 
-            <p>
-              <strong>Submitted:</strong>{" "}
-              {new Date(attempt.submitted_at).toLocaleString()}
-            </p>
+              <div className="history-percentage">
+                <span>Percentage</span>
+                <strong className={getScoreClass(attempt.percentage)}>
+                  {attempt.percentage}%
+                </strong>
+              </div>
 
-            <hr />
-          </div>
-        ))
+              <div className="history-date">
+                <span>Submitted</span>
+                <strong>
+                  {new Date(attempt.submitted_at).toLocaleString()}
+                </strong>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getUsers, deleteUser } from "../api/userApi";
-import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 
 function AdminUsers() {
@@ -25,10 +24,14 @@ function AdminUsers() {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (!user || user.role !== "admin") {
+      return;
+    }
 
-  if(!user || user.role !== "admin"){
+    fetchUsers();
+  }, [user]);
+
+  if (!user || user.role !== "admin") {
     return null;
   }
 
@@ -47,7 +50,7 @@ function AdminUsers() {
       setMessage("User deleted successfully.");
 
       setUsers((currentUsers) =>
-        currentUsers.filter((user) => user.id !== userId)
+        currentUsers.filter((currentUser) => currentUser.id !== userId)
       );
     } catch (error) {
       console.error(error);
@@ -61,37 +64,89 @@ function AdminUsers() {
   };
 
   return (
-    <div>
-      <h2>Manage Users</h2>
-
-      {message && <p>{message}</p>}
-
-      {users.map((user) => (
-        <div key={user.id}>
-          <p>
-            <strong>Name:</strong> {user.name}
-          </p>
-
-          <p>
-            <strong>Email:</strong> {user.email}
-          </p>
-
-          <p>
-            <strong>College:</strong> {user.college}
-          </p>
-
-          <p>
-            <strong>Year:</strong> {user.year}
-          </p>
-
-          <button onClick={() => handleDelete(user.id)}>
-            Delete
-          </button>
-
-          <hr />
+    <section className="admin-users-section">
+      <div className="section-heading">
+        <div>
+          <h2>Manage Users</h2>
+          <p>View and manage registered users on PrepOnGo.</p>
         </div>
-      ))}
-    </div>
+
+        <span className="question-count">
+          {users.length} Users
+        </span>
+      </div>
+
+      {message && (
+        <div className="admin-message">
+          {message}
+        </div>
+      )}
+
+      {users.length === 0 ? (
+        <div className="admin-empty-state">
+          <p>No registered users found.</p>
+        </div>
+      ) : (
+        <div className="users-table-wrapper">
+          <table className="users-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>College</th>
+                <th>Year</th>
+                <th>Role</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {users.map((currentUser) => (
+                <tr key={currentUser.id}>
+                  <td>
+                    <div className="user-name-cell">
+                      <div className="user-avatar">
+                        {currentUser.name?.charAt(0).toUpperCase()}
+                      </div>
+
+                      <strong>{currentUser.name}</strong>
+                    </div>
+                  </td>
+
+                  <td>{currentUser.email}</td>
+
+                  <td>{currentUser.college}</td>
+
+                  <td>{currentUser.year}</td>
+
+                  <td>
+                    <span className="user-role-badge">
+                      {currentUser.role || "student"}
+                    </span>
+                  </td>
+
+                  <td>
+                    {currentUser.id === user.id ? (
+                      <span className="current-user-label">
+                        You
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="delete-user-button"
+                        onClick={() => handleDelete(currentUser.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   );
 }
 

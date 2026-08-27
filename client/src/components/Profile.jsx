@@ -50,6 +50,9 @@ function Profile() {
           <div>
             <p className="card-label">MY PROFILE</p>
             <h2>{user.name}</h2>
+            <p className="profile-subtitle">
+              Your PrepOnGo account information
+            </p>
           </div>
 
           <span className="role-badge">
@@ -58,17 +61,17 @@ function Profile() {
         </div>
 
         <div className="profile-details">
-          <div>
+          <div className="profile-detail">
             <span>Email</span>
             <strong>{user.email}</strong>
           </div>
 
-          <div>
+          <div className="profile-detail">
             <span>College</span>
             <strong>{user.college}</strong>
           </div>
 
-          <div>
+          <div className="profile-detail">
             <span>Year</span>
             <strong>{user.year}</strong>
           </div>

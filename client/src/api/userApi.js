@@ -69,3 +69,8 @@ export const getQuizStats = async () => {
   const response = await apiClient.get("/quiz/stats");
   return response.data;
 };
+
+export const getAdminStats = async () => {
+  const response = await apiClient.get("/admin/stats");
+  return response.data;
+};
