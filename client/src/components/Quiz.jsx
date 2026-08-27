@@ -96,103 +96,142 @@ function Quiz() {
   };
 
   return (
-  <div>
-    <h2>Quiz</h2>
+  <section className="quiz-section">
+    <div className="section-heading">
+      <div>
+        <p className="card-label">PRACTICE QUIZ</p>
+        <h2>Test Your Knowledge</h2>
+        <p>Answer all questions and submit your quiz to see your score.</p>
+      </div>
 
-    {message && <p>{message}</p>}
+      <span className="question-count">
+        {questions.length} {questions.length === 1 ? "Question" : "Questions"}
+      </span>
+    </div>
+
+    {message && (
+      <div className="quiz-message">
+        {message}
+      </div>
+    )}
 
     <form onSubmit={handleSubmit}>
+      <div className="questions-list">
+        {questions.map((question, index) => (
+          <div className="question-card" key={question.id}>
+            <div className="question-number">
+              Question {index + 1}
+            </div>
 
-      {questions.map((question, index) => (
-        <div key={question.id}>
-          <h3>
-            {index + 1}. {question.question}
-          </h3>
+            <h3>{question.question}</h3>
 
-          <div>
-            <label>
-              <input
-                type="radio"
-                name={`question-${question.id}`}
-                value="A"
-                checked={answers[question.id] === "A"}
-                onChange={() =>
-                  handleAnswerChange(question.id, "A")
-                }
-              />
-              {question.option_a}
-            </label>
+            <div className="options-list">
+              <label
+                className={`option ${
+                  answers[question.id] === "A" ? "selected" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name={`question-${question.id}`}
+                  value="A"
+                  checked={answers[question.id] === "A"}
+                  onChange={() =>
+                    handleAnswerChange(question.id, "A")
+                  }
+                />
+
+                <span className="option-letter">A</span>
+                <span>{question.option_a}</span>
+              </label>
+
+              <label
+                className={`option ${
+                  answers[question.id] === "B" ? "selected" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name={`question-${question.id}`}
+                  value="B"
+                  checked={answers[question.id] === "B"}
+                  onChange={() =>
+                    handleAnswerChange(question.id, "B")
+                  }
+                />
+
+                <span className="option-letter">B</span>
+                <span>{question.option_b}</span>
+              </label>
+
+              <label
+                className={`option ${
+                  answers[question.id] === "C" ? "selected" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name={`question-${question.id}`}
+                  value="C"
+                  checked={answers[question.id] === "C"}
+                  onChange={() =>
+                    handleAnswerChange(question.id, "C")
+                  }
+                />
+
+                <span className="option-letter">C</span>
+                <span>{question.option_c}</span>
+              </label>
+
+              <label
+                className={`option ${
+                  answers[question.id] === "D" ? "selected" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name={`question-${question.id}`}
+                  value="D"
+                  checked={answers[question.id] === "D"}
+                  onChange={() =>
+                    handleAnswerChange(question.id, "D")
+                  }
+                />
+
+                <span className="option-letter">D</span>
+                <span>{question.option_d}</span>
+              </label>
+            </div>
           </div>
+        ))}
+      </div>
 
-          <div>
-            <label>
-              <input
-                type="radio"
-                name={`question-${question.id}`}
-                value="B"
-                checked={answers[question.id] === "B"}
-                onChange={() =>
-                  handleAnswerChange(question.id, "B")
-                }
-              />
-              {question.option_b}
-            </label>
-          </div>
-
-          <div>
-            <label>
-              <input
-                type="radio"
-                name={`question-${question.id}`}
-                value="C"
-                checked={answers[question.id] === "C"}
-                onChange={() =>
-                  handleAnswerChange(question.id, "C")
-                }
-              />
-              {question.option_c}
-            </label>
-          </div>
-
-          <div>
-            <label>
-              <input
-                type="radio"
-                name={`question-${question.id}`}
-                value="D"
-                checked={answers[question.id] === "D"}
-                onChange={() =>
-                  handleAnswerChange(question.id, "D")
-                }
-              />
-              {question.option_d}
-            </label>
-          </div>
-
-          <hr />
-        </div>
-      ))}
-      <button type="submit" disabled={submitting}>
+      <button
+        className="submit-quiz-button"
+        type="submit"
+        disabled={submitting}
+      >
         {submitting ? "Submitting..." : "Submit Quiz"}
       </button>
     </form>
-    {result && (
-        <div>
-            <h3>Quiz Result</h3>
-            <p>
-                Score: {result.score} / {result.total}
-            </p>
-            <p>
-                Percentage: {result.percentage}%
-            </p>
 
-            <button type="button" onClick={handleTryAgain}>
-              Try Again
-            </button>
+    {result && (
+      <div className="quiz-result">
+        <div>
+          <span>Score</span>
+          <strong>
+            {result.score}/{result.total}
+          </strong>
         </div>
+
+        <div>
+          <span>Percentage</span>
+          <strong>{result.percentage}%</strong>
+        </div>
+      </div>
     )}
-    </div>
-  );
+  </section>
+);
 }
 
 export default Quiz;

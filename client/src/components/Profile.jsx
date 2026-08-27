@@ -6,58 +6,74 @@ function Profile() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-  const fetchProfile = async () => {
-    const token = localStorage.getItem("token");
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
 
-    if (!token) {
-      setError("Authentication token required");
-      return;
-    }
-
-    try {
-      const data = await getProfile();
-      setUser(data);
-    } catch (error) {
-      console.error(error);
-
-      if (error.response) {
-        setError(error.response.data.message);
-      } else {
-        setError("Failed to load profile.");
+      if (!token) {
+        setError("Authentication token required");
+        return;
       }
-    }
-  };
 
-  fetchProfile();
-}, []);
+      try {
+        const data = await getProfile();
+        setUser(data);
+      } catch (error) {
+        console.error(error);
+
+        if (error.response) {
+          setError(error.response.data.message);
+        } else {
+          setError("Failed to load profile.");
+        }
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   if (error) {
-    return <p>{error}</p>;
+    return <p className="profile-error">{error}</p>;
   }
 
   if (!user) {
-    return <p>Loading profile...</p>;
+    return <p className="profile-loading">Loading profile...</p>;
   }
 
   return (
-    <div>
-      <h2>My Profile</h2>
+    <div className="profile-card">
+      <div className="profile-avatar">
+        {user.name?.charAt(0).toUpperCase()}
+      </div>
 
-      <p>
-        <strong>Name:</strong> {user.name}
-      </p>
+      <div className="profile-info">
+        <div className="profile-heading">
+          <div>
+            <p className="card-label">MY PROFILE</p>
+            <h2>{user.name}</h2>
+          </div>
 
-      <p>
-        <strong>Email:</strong> {user.email}
-      </p>
+          <span className="role-badge">
+            {user.role}
+          </span>
+        </div>
 
-      <p>
-        <strong>College:</strong> {user.college}
-      </p>
+        <div className="profile-details">
+          <div>
+            <span>Email</span>
+            <strong>{user.email}</strong>
+          </div>
 
-      <p>
-        <strong>Year:</strong> {user.year}
-      </p>
+          <div>
+            <span>College</span>
+            <strong>{user.college}</strong>
+          </div>
+
+          <div>
+            <span>Year</span>
+            <strong>{user.year}</strong>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

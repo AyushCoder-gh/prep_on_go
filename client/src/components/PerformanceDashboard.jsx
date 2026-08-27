@@ -44,26 +44,26 @@ function PerformanceDashboard() {
       {!stats ? (
         <p>Loading performance...</p>
       ) : (
-        <div>
-          <p>
-            <strong>Total Attempts:</strong>{" "}
-            {stats.totalAttempts}
-          </p>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <span>Total Attempts</span>
+            <strong>{stats.totalAttempts}</strong>
+          </div>
 
-          <p>
-            <strong>Best Percentage:</strong>{" "}
-            {stats.bestPercentage}%
-          </p>
+          <div className="stat-card">
+            <span>Best Score</span>
+            <strong>{stats.bestPercentage}%</strong>
+          </div>
 
-          <p>
-            <strong>Average Percentage:</strong>{" "}
-            {stats.averagePercentage}%
-          </p>
+          <div className="stat-card">
+            <span>Average Score</span>
+            <strong>{stats.averagePercentage}%</strong>
+          </div>
 
-          <p>
-            <strong>Latest Percentage:</strong>{" "}
-            {stats.latestPercentage}%
-          </p>
+          <div className="stat-card">
+            <span>Latest Score</span>
+            <strong>{stats.latestPercentage}%</strong>
+          </div>
         </div>
       )}
     </div>
