@@ -5,11 +5,16 @@ import AuthContext from "../context/AuthContext";
 function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [deletingUserId, setDeletingUserId] = useState(null);
 
   const { user } = useContext(AuthContext);
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
+      setMessage("");
+
       const data = await getUsers();
       setUsers(data);
     } catch (error) {
@@ -20,6 +25,8 @@ function AdminUsers() {
       } else {
         setMessage("Failed to fetch users.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,13 +52,16 @@ function AdminUsers() {
     }
 
     try {
-      await deleteUser(userId);
+      setDeletingUserId(userId);
+      setMessage("");
 
-      setMessage("User deleted successfully.");
+      await deleteUser(userId);
 
       setUsers((currentUsers) =>
         currentUsers.filter((currentUser) => currentUser.id !== userId)
       );
+
+      setMessage("User deleted successfully.");
     } catch (error) {
       console.error(error);
 
@@ -60,19 +70,27 @@ function AdminUsers() {
       } else {
         setMessage("Failed to delete user.");
       }
+    } finally {
+      setDeletingUserId(null);
     }
   };
 
   return (
     <section className="admin-users-section">
+
       <div className="section-heading">
         <div>
+          <p className="card-label">USER MANAGEMENT</p>
+
           <h2>Manage Users</h2>
-          <p>View and manage registered users on PrepOnGo.</p>
+
+          <p>
+            View and manage registered users on PrepOnGo.
+          </p>
         </div>
 
         <span className="question-count">
-          {users.length} Users
+          {users.length} {users.length === 1 ? "User" : "Users"}
         </span>
       </div>
 
@@ -82,13 +100,21 @@ function AdminUsers() {
         </div>
       )}
 
-      {users.length === 0 ? (
+      {loading ? (
         <div className="admin-empty-state">
-          <p>No registered users found.</p>
+          <p>Loading users...</p>
+        </div>
+      ) : users.length === 0 ? (
+        <div className="admin-empty-state">
+          <h3>No users found</h3>
+          <p>
+            There are currently no registered users on PrepOnGo.
+          </p>
         </div>
       ) : (
         <div className="users-table-wrapper">
           <table className="users-table">
+
             <thead>
               <tr>
                 <th>Name</th>
@@ -101,51 +127,81 @@ function AdminUsers() {
             </thead>
 
             <tbody>
-              {users.map((currentUser) => (
-                <tr key={currentUser.id}>
-                  <td>
-                    <div className="user-name-cell">
-                      <div className="user-avatar">
-                        {currentUser.name?.charAt(0).toUpperCase()}
+              {users.map((currentUser) => {
+
+                const isCurrentUser =
+                  currentUser.id === user.id;
+
+                const isDeleting =
+                  deletingUserId === currentUser.id;
+
+                return (
+                  <tr key={currentUser.id}>
+
+                    <td>
+                      <div className="user-name-cell">
+
+                        <div className="user-avatar">
+                          {currentUser.name
+                            ?.charAt(0)
+                            .toUpperCase()}
+                        </div>
+
+                        <strong>
+                          {currentUser.name}
+                        </strong>
+
                       </div>
+                    </td>
 
-                      <strong>{currentUser.name}</strong>
-                    </div>
-                  </td>
+                    <td>
+                      {currentUser.email}
+                    </td>
 
-                  <td>{currentUser.email}</td>
+                    <td>
+                      {currentUser.college || "—"}
+                    </td>
 
-                  <td>{currentUser.college}</td>
+                    <td>
+                      {currentUser.year || "—"}
+                    </td>
 
-                  <td>{currentUser.year}</td>
-
-                  <td>
-                    <span className="user-role-badge">
-                      {currentUser.role || "student"}
-                    </span>
-                  </td>
-
-                  <td>
-                    {currentUser.id === user.id ? (
-                      <span className="current-user-label">
-                        You
+                    <td>
+                      <span className="user-role-badge">
+                        {currentUser.role || "student"}
                       </span>
-                    ) : (
-                      <button
-                        type="button"
-                        className="delete-user-button"
-                        onClick={() => handleDelete(currentUser.id)}
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+
+                    <td>
+                      {isCurrentUser ? (
+                        <span className="current-user-label">
+                          You
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="delete-user-button"
+                          onClick={() =>
+                            handleDelete(currentUser.id)
+                          }
+                          disabled={isDeleting}
+                        >
+                          {isDeleting
+                            ? "Deleting..."
+                            : "Delete"}
+                        </button>
+                      )}
+                    </td>
+
+                  </tr>
+                );
+              })}
             </tbody>
+
           </table>
         </div>
       )}
+
     </section>
   );
 }

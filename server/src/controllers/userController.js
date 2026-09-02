@@ -91,6 +91,12 @@ const loginUser = async (req, res, next) => {
       user.password
     );
 
+    if (!passwordMatch) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+      });
+    }
+
     const token = jwt.sign(
     { userId: user.id,
       role: user.role,
@@ -98,12 +104,6 @@ const loginUser = async (req, res, next) => {
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
     );
-
-    if (!passwordMatch) {
-      return res.status(401).json({
-        message: "Invalid email or password",
-      });
-    }
 
     res.status(200).json({
   message: "Login successful",

@@ -1,5 +1,9 @@
 import apiClient from "./apiClient";
 
+/* =========================
+   USER APIs
+========================= */
+
 export const getUsers = async () => {
   const response = await apiClient.get("/users");
   return response.data;
@@ -10,6 +14,16 @@ export const createUser = async (userData) => {
   return response.data;
 };
 
+export const deleteUser = async (userId) => {
+  const response = await apiClient.delete(`/users/${userId}`);
+  return response.data;
+};
+
+
+/* =========================
+   AUTHENTICATION & PROFILE
+========================= */
+
 export const loginUser = async (loginData) => {
   const response = await apiClient.post("/login", loginData);
   return response.data;
@@ -18,15 +32,26 @@ export const loginUser = async (loginData) => {
 export const getProfile = async () => {
   const response = await apiClient.get("/profile");
   return response.data;
-}
-
-export const deleteUser = async (userId) => {
-  const response = await apiClient.delete(`/users/${userId}`);
-  return response.data;
 };
 
-export const getQuestions = async () => {
-  const response = await apiClient.get("/questions");
+
+/* =========================
+   QUESTION APIs
+========================= */
+
+export const getQuestions = async ({
+  category = "All",
+  difficulty = "All",
+  limit = 10,
+} = {}) => {
+  const response = await apiClient.get("/questions", {
+    params: {
+      category,
+      difficulty,
+      limit,
+    },
+  });
+
   return response.data;
 };
 
@@ -35,16 +60,12 @@ export const getAdminQuestions = async () => {
   return response.data;
 };
 
-export const submitQuiz = async (answers) => {
-  const response = await apiClient.post("/quiz/submit", {
-    answers,
-  });
-
-  return response.data;
-};
-
 export const createQuestion = async (questionData) => {
-  const response = await apiClient.post("/questions", questionData);
+  const response = await apiClient.post(
+    "/questions",
+    questionData
+  );
+
   return response.data;
 };
 
@@ -65,10 +86,36 @@ export const deleteQuestion = async (questionId) => {
   return response.data;
 };
 
+
+/* =========================
+   QUIZ APIs
+========================= */
+
+export const submitQuiz = async (answers) => {
+  const response = await apiClient.post(
+    "/quiz/submit",
+    {
+      answers,
+    }
+  );
+
+  return response.data;
+};
+
 export const getQuizStats = async () => {
   const response = await apiClient.get("/quiz/stats");
   return response.data;
 };
+
+export const getQuizHistory = async () => {
+  const response = await apiClient.get("/quiz/history");
+  return response.data;
+};
+
+
+/* =========================
+   ADMIN APIs
+========================= */
 
 export const getAdminStats = async () => {
   const response = await apiClient.get("/admin/stats");

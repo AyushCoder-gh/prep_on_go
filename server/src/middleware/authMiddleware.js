@@ -10,14 +10,14 @@ const authMiddleware = (req, res, next) => {
       });
     }
 
-    const token = authHeader.split(" ")[1];
+    const [scheme, token] = authHeader.split(" ");
 
-    if (!token) {
+    if(scheme !== "Bearer" || !token){
       return res.status(401).json({
         message: "Authentication token required",
       });
     }
-
+    
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET

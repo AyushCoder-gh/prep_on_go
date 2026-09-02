@@ -1,14 +1,65 @@
 const pool = require("../config/db");
 
 const getAllQuestions = async (req, res, next) => {
-    try{
-        const result = await pool.query(`
-            SELECT id, question, option_a, option_b, option_c, option_d, category, difficulty, created_at
-            FROM questions
-            ORDER BY id ASC
-            `);
+    try {
+        const { category, difficulty, limit = 10 } = req.query;
+
+        const parsedLimit = Number(limit);
+
+        if (
+            !Number.isInteger(parsedLimit) ||
+            parsedLimit < 1 ||
+            parsedLimit > 50
+        ) {
+            return res.status(400).json({
+                message: "Limit must be a number between 1 and 50.",
+            });
+        }
+
+        const values = [];
+        const conditions = [];
+
+        if (category && category !== "All") {
+            values.push(category);
+            conditions.push(`category = $${values.length}`);
+        }
+
+        if (difficulty && difficulty !== "All") {
+            values.push(difficulty);
+            conditions.push(`difficulty = $${values.length}`);
+        }
+
+        values.push(parsedLimit);
+
+        const limitPosition = values.length;
+
+        const whereClause =
+            conditions.length > 0
+                ? `WHERE ${conditions.join(" AND ")}`
+                : "";
+
+        const result = await pool.query(
+            `
+                SELECT
+                    id,
+                    question,
+                    option_a,
+                    option_b,
+                    option_c,
+                    option_d,
+                    category,
+                    difficulty,
+                    created_at
+                FROM questions
+                ${whereClause}
+                ORDER BY RANDOM()
+                LIMIT $${limitPosition}
+            `,
+            values
+        );
+
         res.status(200).json(result.rows);
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 };
@@ -69,6 +120,7 @@ const createQuestion = async (req, res, next) => {
                     option_b,
                     option_c,
                     option_d,
+                    correct_option,
                     category,
                     difficulty,
                     created_at;
@@ -96,7 +148,7 @@ const createQuestion = async (req, res, next) => {
 
 const deleteQuestion = async (req, res, next) => {
     try{
-        const questionId = req.params.id;
+        const questionId = Number(req.params.id);
 
         const result = await pool.query(
             `
@@ -124,7 +176,7 @@ const deleteQuestion = async (req, res, next) => {
 
 const updateQuestion = async (req, res, next) => {
     try{
-        const questionId = req.params.id;
+        const questionId = Number(req.params.id);
 
         const {
             question,
@@ -157,6 +209,7 @@ const updateQuestion = async (req, res, next) => {
                     option_b,
                     option_c,
                     option_d,
+                    correct_option,
                     category,
                     difficulty,
                     created_at;

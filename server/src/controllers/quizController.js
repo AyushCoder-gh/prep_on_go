@@ -14,7 +14,14 @@ const submitQuiz = async (req, res, next) => {
 
     const result = await pool.query(
       `
-      SELECT id, correct_option
+      SELECT
+        id,
+        question,
+        option_a,
+        option_b,
+        option_c,
+        option_d,
+        correct_option
       FROM questions
       WHERE id = ANY($1::int[])
       `,
@@ -25,23 +32,42 @@ const submitQuiz = async (req, res, next) => {
 
     let score = 0;
 
-    questions.forEach((question) => {
+    const results = questions.map((question) => {
       const submittedAnswer = answers.find(
-        (answer) => Number(answer.questionId) === Number(question.id)
+        (answer) =>
+          Number(answer.questionId) === Number(question.id)
       );
 
-      if (
-        submittedAnswer &&
-        submittedAnswer.selectedOption === question.correct_option
-      ) {
+      const selectedOption = submittedAnswer
+        ? submittedAnswer.selectedOption
+        : null;
+
+      const isCorrect =
+        selectedOption === question.correct_option;
+
+      if (isCorrect) {
         score++;
       }
+
+      return {
+        questionId: question.id,
+        question: question.question,
+        option_a: question.option_a,
+        option_b: question.option_b,
+        option_c: question.option_c,
+        option_d: question.option_d,
+        selectedOption,
+        correctOption: question.correct_option,
+        isCorrect,
+      };
     });
 
     const total = questions.length;
 
-    const percentage = 
-      total === 0 ? 0 : Math.round((score / total) * 100);
+    const percentage =
+      total === 0
+        ? 0
+        : Math.round((score / total) * 100);
 
     await pool.query(
       `
@@ -53,14 +79,20 @@ const submitQuiz = async (req, res, next) => {
         )
         VALUES ($1, $2, $3, $4)
       `,
-      [req.user.userId, score, total, percentage]
+      [
+        req.user.userId,
+        score,
+        total,
+        percentage,
+      ]
     );
 
     res.status(200).json({
       message: "Quiz submitted successfully.",
-      score, 
+      score,
       total,
       percentage,
+      results,
     });
   } catch (error) {
     next(error);

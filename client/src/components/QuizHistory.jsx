@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import apiClient from "../api/apiClient";
 import AuthContext from "../context/AuthContext";
 
-function QuizHistory() {
+function QuizHistory({ refreshKey }) {
   const [attempts, setAttempts] = useState([]);
   const [message, setMessage] = useState("");
 
@@ -29,7 +29,7 @@ function QuizHistory() {
     };
 
     fetchHistory();
-  }, [user]);
+  }, [user, refreshKey]);
 
   if (!user) {
     return null;

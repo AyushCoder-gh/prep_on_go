@@ -1,27 +1,29 @@
 import { useContext } from "react";
 import "./App.css";
-import LoginForm from "./components/LoginForm";
+
 import AuthContext from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
-
+import LoginForm from "./components/LoginForm";
 
 function App() {
   const { isAuthenticated, loading } = useContext(AuthContext);
 
-  if(loading){
-    return <p>Checking authentication...</p>;
+  if (loading) {
+    return (
+      <div className="app-loading">
+        <p>Checking authentication...</p>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="app">
       <Navbar />
 
-      {isAuthenticated ? (
-        <Dashboard />
-      ) : (
-        <LoginForm />
-      )}
+      <main className="app-content">
+        {isAuthenticated ? <Dashboard /> : <LoginForm />}
+      </main>
     </div>
   );
 }

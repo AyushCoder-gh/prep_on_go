@@ -1,41 +1,42 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { loginUser } from "../api/userApi";
-import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  
+  const [loading, setLoading] = useState(false);
+
   const { login } = useContext(AuthContext);
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  setMessage("");
+    setMessage("");
+    setLoading(true);
 
-  try {
-    const response = await loginUser({
-  email,
-  password,
-});
+    try {
+      const response = await loginUser({
+        email,
+        password,
+      });
 
-console.log(response);
+      login(response.user, response.token);
+    } catch (error) {
+      console.error("Login failed:", error);
 
-login(response.user, response.token);
-
-setMessage("Login successful!");
-  } catch (error) {
-    console.error(error);
-
-    if (error.response) {
-      setMessage(error.response.data.message);
-    } else {
-      setMessage("Something went wrong.");
+      if (error.response) {
+        setMessage(
+          error.response.data.message || "Invalid email or password."
+        );
+      } else {
+        setMessage("Unable to connect to the server.");
+      }
+    } finally {
+      setLoading(false);
     }
-  }
-};
+  };
 
   return (
     <div>
@@ -48,7 +49,8 @@ setMessage("Login successful!");
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(event) => setEmail(event.target.value)}
+          required
         />
 
         <br />
@@ -58,14 +60,15 @@ setMessage("Login successful!");
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(event) => setPassword(event.target.value)}
+          required
         />
 
         <br />
         <br />
 
-        <button type="submit">
-          Login
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
